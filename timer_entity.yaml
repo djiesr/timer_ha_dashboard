@@ -1,0 +1,147 @@
+# Pour ce package vous devez remplacer "switch.cuisine" par l'ID de l'appareil que vous voulez contrôler.
+# Exemple: "switch.cuisine" peut devenir "switch.chargeur_voiture"
+# Pour modifier les noms et alias, vous pouvez remplacer "Prise cuisine" et "prise_cuisine" par ce que vous voulez, 
+# mais si vous les modifier, vous devez tous les changer, à mois de savoir précisément ce que vous faites.
+# Exemple pour l'alias: "Prise cuisine Auto Off" peut devenir "Chargeur voiture Auto Off"
+# Exemple pour le nom: "timer.prise_cuisine_minuteur" peut devenir "timer.chargeur_auto_minuteur"
+# Notez qu'on peut ajouter des alias dans Home assistant sans changer ceux de ce package.
+# Dans le script pour les notifications, vous pouvez ajouter votre mobile et Alexa. Pour google, 
+# vous pouvez ajouter un text-to-speech temporaire pour contourner les problèmes du SDK.
+
+automation:
+- alias: Prise cuisine On # Alias
+  description: ""
+  trigger:
+    - platform: state
+      entity_id:
+        - input_boolean.prise_cuisine_timer_actif # Nom
+      to: "on"
+  condition: []
+  action:
+    - service: switch.turn_on
+      data: {}
+      target:
+        entity_id: switch.cuisine # Id de le l'appareil à contrôler
+    - service: timer.start
+      data:
+        duration: "{{ states('input_number.prise_cuisine_minuteur_set')|int * 60}}" # Nom
+      target:
+        entity_id: timer.prise_cuisine_minuteur # Nom
+  mode: single
+
+- alias: Prise cuisine Auto Off # Alias
+  description: ""
+  trigger:
+  - platform: event
+    event_type: timer.finished
+    event_data:
+      entity_id: timer.prise_cuisine_minuteur # Nom
+  condition: []
+  action:
+    - service: switch.turn_off
+      data: {}
+      target:
+        entity_id: switch.cuisine # Id de le l'appareil à contrôler
+    - service: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.prise_cuisine_timer_actif # Nom
+    - service: script.turn_on
+      target:
+        entity_id: script.prise_cuisine_notification # Nom
+      data:
+        variables:
+          title: "Minuteur Prise cuisine"  # Alias
+          message: "La Prise cuisien c'est arrêté après {{ (as_timestamp(now()) - as_timestamp(states.switch.cuisine.last_changed)) | timestamp_custom('%H:%M:%S', false) }} "  # Alias et Id de le l'appareil à contrôler
+
+  mode: single
+
+- alias: Prise cuisine Auto Off # Alias
+  description: ""
+  trigger:
+    - platform: state
+      entity_id:
+        - input_boolean.prise_cuisine_timer_actif # Nom
+      to: "off"
+  condition: []
+  action:
+    - service: switch.turn_off
+      data: {}
+      target:
+        entity_id: switch.cuisine # Id de le l'appareil à contrôler
+    - service: timer.cancel
+      target:
+        entity_id: timer.prise_cuisine_minuteur # Nom
+    - service: script.turn_on
+      target:
+        entity_id: script.prise_cuisine_notification # Nom
+      data:
+        variables:
+          title: "Minuteur cuisine"
+          message: "La prise c'est arrêté après {{ (as_timestamp(now()) - as_timestamp(states.switch.cuisine.last_changed)) | timestamp_custom('%H:%M:%S', false) }} "
+  mode: single
+
+- alias: Prise cuisine minuteur set change # Alias
+  mode: single
+  trigger:
+    - platform: state
+      entity_id: input_number.prise_cuisine_minuteur_set # Nom
+  action:
+  - service: input_datetime.set_datetime
+    target:
+      entity_id: input_datetime.prise_cuisine_set_time
+    data:
+      timestamp: "{{ (states('input_number.prise_cuisine_minuteur_set')|int * 60) + now().timestamp() }}" # Nom
+  - service: input_datetime.set_datetime
+    target:
+      entity_id: input_datetime.prise_cuisine_set_hour # Nom
+    data:
+      timestamp: "{{ (states('input_number.prise_cuisine_minuteur_set')|int * 60) + today_at('00:00').timestamp() }}" # Nom
+
+script:
+  prise_cuisine_notification: # Nom
+    sequence:
+      - condition: state
+        entity_id: input_boolean.prise_cuisine_notification_actif # Nom
+        state: "on"
+      - service: notify.mobile_app_sm_g960u # Notification sur votre mobile
+        data:
+          title: "{{ title }}"
+          message: "{{ message }}"
+######### Google Assistant SDK à des problèmes avec le "fr-ca", il n'est donc pas disponible présentement
+#      - service: notify.google_assistant_sdk # Notification sur Google
+#        data:
+#          message: "{{ title }} {{ message }}"
+      - service: notify.alexa_media_jean_sebastien_echo_dot # Notification sur Alexa
+        data:
+          message: "{{ title }} {{ message }}"
+
+input_datetime: 
+  prise_cuisine_set_time: # Nom
+    name: Prise cuisine Set time # Alias
+    has_date: false
+    has_time: true
+  prise_cuisine_set_hour: # Nom
+    name: Prise cuisine Set hour # Alias
+    has_date: false
+    has_time: true
+
+timer: 
+  prise_cuisine_minuteur: # Nom
+    duration: "00:10:00"
+
+input_number:
+  prise_cuisine_minuteur_set: # Nom
+    mode: slider
+    initial: 10
+    min: 10
+    max: 600
+    step: 10
+
+input_boolean:
+  prise_cuisine_timer_actif: # Nom
+    name: Prise cuisine timer actif # Alias
+    icon: mdi:timer-plus
+  prise_cuisine_notification_actif: # Nom
+    name: Prise cuisine notification actif # Alias
+    icon: mdi:mail
+
