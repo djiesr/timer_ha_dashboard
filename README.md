@@ -1,5 +1,18 @@
 # timer_ha_dashboard
-Add a timer to the dashboard of Home Assistant
+Copy the timer_entity.yaml file with your other package file.
+
+If you didn't configure packages file before, follow these steps:
+
+Add these lines in your configuration.yaml. If you already have a line "homeassistant:", just copy the "packages" line.
+homeassistant:
+  packages: !include_dir_named packages/
+
+Create the "packages" folder in your "config" folder in Home Assistant.
+Download or copy the hq_open_data.yaml file in your "HA"/config/packages/ folder.
+Reboot HA
+
+All sensor start by "Hydro-Québec Demande" or "Hydro-Québec Production"
+You can paste the "dashboard.yaml" content in a empty card of your dashboard for this result.
 
 
 Dashboard normal<BR>
