@@ -12,6 +12,16 @@ Download or copy the hq_open_data.yaml file in your "HA"/config/packages/ folder
 Reboot HA
 
 # Set the package for your entity
+For this package, you must replace "switch.cuisine" with the ID of the device you want to control.
+Example: "switch.cuisine" can become "switch.car_charger"
+
+To modify the names and aliases, you can replace "Prise cuisine" and "prise_cuisine" with what you want, but if you modify them, you must change them all, unless you know exactly what you're doing.
+Example for the alias: "Prise cuisine Auto Off" can become "Car charger Auto Off"
+Example for the name: "timer.prise_cuisine_minuteur" can become "timer.car_charger_timer"
+
+Note that you can add aliases in Home assistant without changing those in this package.
+
+In the script for notifications, you can add your mobile and Alexa. For Google, you can add a temporary text-to-speech to work around the SDK problems.
 
 # Add the dashboard
 
