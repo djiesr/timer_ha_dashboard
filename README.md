@@ -19,6 +19,10 @@ To modify the names and aliases, you can replace "Prise cuisine" and "prise_cuis
 Example for the alias: "Prise cuisine Auto Off" can become "Car charger Auto Off"
 Example for the name: "timer.prise_cuisine_minuteur" can become "timer.car_charger_timer"
 
+You can set the minimum and maximum time for the timer with:
+>    min: 10 # Set the minimum time for the slider <br>
+>    max: 600 # Set the maximum time for the slider
+
 Note that you can add aliases in Home assistant without changing those in this package.
 
 In the script for notifications, you can add your mobile and Alexa. For Google, you can add a temporary text-to-speech to work around the SDK problems.
