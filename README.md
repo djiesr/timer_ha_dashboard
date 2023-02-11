@@ -3,13 +3,14 @@ Copy the timer_entity.yaml file with your other package file.
 
 If you didn't configure packages file before, follow these steps:
 
-Add these lines in your configuration.yaml. If you already have a line "homeassistant:", just copy the "packages" line.
-homeassistant:
-  packages: !include_dir_named packages/
+1. Add these lines in your configuration.yaml. If you already have a line "homeassistant:", just copy the "packages" line.
 
-Create the "packages" folder in your "config" folder in Home Assistant.
-Download or copy the hq_open_data.yaml file in your "HA"/config/packages/ folder.
-Reboot HA
+> homeassistant: <BR>
+> &nbsp;&nbsp;packages: !include_dir_named packages/
+
+2. Create the "packages" folder in your "config" folder in Home Assistant.
+3. Download or copy the timer_entity.yaml file in your "HA"/config/packages/ folder.
+4. Reboot HA
 
 # Set the package for your entity
 For this package, you must replace "switch.cuisine" with the ID of the device you want to control.
