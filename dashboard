@@ -1,0 +1,43 @@
+type: vertical-stack
+title: Minuteur prise cuisine
+cards:
+  - type: horizontal-stack
+    cards:
+      - show_name: true
+        show_icon: true
+        type: button
+        tap_action:
+          action: toggle
+        entity: switch.cuisine
+        icon: mdi:power-plug
+      - show_name: true
+        show_icon: true
+        type: button
+        tap_action:
+          action: toggle
+        entity: input_boolean.prise_cuisine_timer_actif
+        name: Minuteur
+      - show_name: true
+        show_icon: true
+        type: button
+        tap_action:
+          action: toggle
+        entity: input_boolean.prise_cuisine_notification_actif
+        name: Notification
+  - type: entities
+    entities:
+      - entity: timer.prise_cuisine_minuteur
+        name: Temps restant
+        secondary_info: none
+  - type: entities
+    entities:
+      - entity: input_number.prise_cuisine_minuteur_set
+        name: Minuteur
+  - type: horizontal-stack
+    cards:
+      - type: entity
+        entity: input_datetime.prise_cuisine_set_time
+        name: Heure de fin
+      - type: entity
+        entity: input_datetime.prise_cuisine_set_hour
+        name: Durée totale
