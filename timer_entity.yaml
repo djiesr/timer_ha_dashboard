@@ -125,8 +125,8 @@ input_number:
   prise_cuisine_minuteur_set: # Name
     mode: slider
     initial: 10
-    min: 10
-    max: 600
+    min: 10 # Set the minimum time for the slider
+    max: 600 # Set the maximum time for the slider
     step: 10
 
 input_boolean:
