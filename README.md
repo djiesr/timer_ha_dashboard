@@ -34,7 +34,7 @@ To add the dashboard copy the content of the dashboard yaml file in a empty ("ma
 
 # Dashboard 
 
-For the dashboard.yaml, just copy the content of the file in a empty card. it's can be hard to set the time with the tiny default slider.
+For the dashboard.yaml, just copy the content of the file in a empty card. It's can be hard to set the time with the tiny default slider.
 
 ![image](https://user-images.githubusercontent.com/31359825/218279715-9d760285-e79a-4b25-8a46-cf1224ab9b91.png)
 ![image](https://user-images.githubusercontent.com/31359825/218279761-6bc61093-8318-4b82-9f45-b01a5761827a.png)
