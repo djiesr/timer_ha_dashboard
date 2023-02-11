@@ -1,12 +1,12 @@
-# Pour ce package vous devez remplacer "switch.cuisine" par l'ID de l'appareil que vous voulez contrôler.
-# Exemple: "switch.cuisine" peut devenir "switch.chargeur_voiture"
-# Pour modifier les noms et alias, vous pouvez remplacer "Prise cuisine" et "prise_cuisine" par ce que vous voulez, 
-# mais si vous les modifier, vous devez tous les changer, à mois de savoir précisément ce que vous faites.
-# Exemple pour l'alias: "Prise cuisine Auto Off" peut devenir "Chargeur voiture Auto Off"
-# Exemple pour le nom: "timer.prise_cuisine_minuteur" peut devenir "timer.chargeur_auto_minuteur"
-# Notez qu'on peut ajouter des alias dans Home assistant sans changer ceux de ce package.
-# Dans le script pour les notifications, vous pouvez ajouter votre mobile et Alexa. Pour google, 
-# vous pouvez ajouter un text-to-speech temporaire pour contourner les problèmes du SDK.
+# For this package, you must replace "switch.cuisine" with the ID of the device you want to control.
+# Example: "switch.cuisine" can become "switch.car_charger"
+# To modify the names and aliases, you can replace "Prise cuisine" and "prise_cuisine" with what you want,
+# but if you modify them, you must change them all, unless you know exactly what you're doing.
+# Example for the alias: "Prise cuisine Auto Off" can become "Car charger Auto Off"
+# Example for the name: "timer.prise_cuisine_minuteur" can become "timer.car_charger_timer"
+# Note that you can add aliases in Home assistant without changing those in this package.
+# In the script for notifications, you can add your mobile and Alexa. For Google,
+# you can add a temporary text-to-speech to work around the SDK problems.
 
 automation:
 - alias: Prise cuisine On # Alias
@@ -14,7 +14,7 @@ automation:
   trigger:
     - platform: state
       entity_id:
-        - input_boolean.prise_cuisine_timer_actif # Nom
+        - input_boolean.prise_cuisine_timer_actif # Name
       to: "on"
   condition: []
   action:
@@ -24,9 +24,9 @@ automation:
         entity_id: switch.cuisine # Id de le l'appareil à contrôler
     - service: timer.start
       data:
-        duration: "{{ states('input_number.prise_cuisine_minuteur_set')|int * 60}}" # Nom
+        duration: "{{ states('input_number.prise_cuisine_minuteur_set')|int * 60}}" # Name
       target:
-        entity_id: timer.prise_cuisine_minuteur # Nom
+        entity_id: timer.prise_cuisine_minuteur # Name
   mode: single
 
 - alias: Prise cuisine Auto Off # Alias
@@ -35,24 +35,24 @@ automation:
   - platform: event
     event_type: timer.finished
     event_data:
-      entity_id: timer.prise_cuisine_minuteur # Nom
+      entity_id: timer.prise_cuisine_minuteur # Name
   condition: []
   action:
     - service: switch.turn_off
       data: {}
       target:
-        entity_id: switch.cuisine # Id de le l'appareil à contrôler
+        entity_id: switch.cuisine # Id of the entity to control
     - service: input_boolean.turn_off
       target:
-        entity_id: input_boolean.prise_cuisine_timer_actif # Nom
+        entity_id: input_boolean.prise_cuisine_timer_actif # Name
     - service: script.turn_on
       target:
-        entity_id: script.prise_cuisine_notification # Nom
+        entity_id: script.prise_cuisine_notification # Name
       data:
         variables:
           title: "Minuteur Prise cuisine"  # Alias
-          message: "La Prise cuisien c'est arrêté après {{ (as_timestamp(now()) - as_timestamp(states.switch.cuisine.last_changed)) | timestamp_custom('%H:%M:%S', false) }} "  # Alias et Id de le l'appareil à contrôler
-
+          message: "La Prise cuisien c'est arrêté après {{ (as_timestamp(now()) - as_timestamp(states.switch.cuisine.last_changed)) | timestamp_custom('%H:%M:%S', false) }} "  # Id of the entity to control and de names
+# You can change "La Prise cuisien c'est arrêté après" fo "The (entity) stop after"
   mode: single
 
 - alias: Prise cuisine Auto Off # Alias
@@ -60,48 +60,49 @@ automation:
   trigger:
     - platform: state
       entity_id:
-        - input_boolean.prise_cuisine_timer_actif # Nom
+        - input_boolean.prise_cuisine_timer_actif # Name
       to: "off"
   condition: []
   action:
     - service: switch.turn_off
       data: {}
       target:
-        entity_id: switch.cuisine # Id de le l'appareil à contrôler
+        entity_id: switch.cuisine # Id of the entity to control
     - service: timer.cancel
       target:
         entity_id: timer.prise_cuisine_minuteur # Nom
     - service: script.turn_on
       target:
-        entity_id: script.prise_cuisine_notification # Nom
+        entity_id: script.prise_cuisine_notification # Name
       data:
         variables:
-          title: "Minuteur cuisine"
-          message: "La prise c'est arrêté après {{ (as_timestamp(now()) - as_timestamp(states.switch.cuisine.last_changed)) | timestamp_custom('%H:%M:%S', false) }} "
+          title: "Minuteur Prise cuisine"  # Alias
+          message: "La Prise cuisine c'est arrêté après {{ (as_timestamp(now()) - as_timestamp(states.switch.cuisine.last_changed)) | timestamp_custom('%H:%M:%S', false) }} " # Id of the entity to control and de names
+# You can change "La Prise cuisien c'est arrêté après" fo "The (entity) stop after"
   mode: single
 
 - alias: Prise cuisine minuteur set change # Alias
   mode: single
   trigger:
     - platform: state
-      entity_id: input_number.prise_cuisine_minuteur_set # Nom
+      entity_id: input_number.prise_cuisine_minuteur_set # Name
   action:
   - service: input_datetime.set_datetime
     target:
       entity_id: input_datetime.prise_cuisine_set_time
     data:
-      timestamp: "{{ (states('input_number.prise_cuisine_minuteur_set')|int * 60) + now().timestamp() }}" # Nom
+      timestamp: "{{ (states('input_number.prise_cuisine_minuteur_set')|int * 60) + now().timestamp() }}" # Name
   - service: input_datetime.set_datetime
     target:
-      entity_id: input_datetime.prise_cuisine_set_hour # Nom
+      entity_id: input_datetime.prise_cuisine_set_hour # Name
     data:
-      timestamp: "{{ (states('input_number.prise_cuisine_minuteur_set')|int * 60) + today_at('00:00').timestamp() }}" # Nom
+      timestamp: "{{ (states('input_number.prise_cuisine_minuteur_set')|int * 60) + today_at('00:00').timestamp() }}" # Name
 
 script:
-  prise_cuisine_notification: # Nom
+  prise_cuisine_notification: # Name
     sequence:
       - condition: state
-        entity_id: input_boolean.prise_cuisine_notification_actif # Nom
+        entity_id: input_boolean.prise_cuisine_notification_actif # Name
         state: "on"
       - service: notify.mobile_app_sm_g960u # Notification sur votre mobile
         data:
@@ -116,21 +117,21 @@ script:
           message: "{{ title }} {{ message }}"
 
 input_datetime: 
-  prise_cuisine_set_time: # Nom
+  prise_cuisine_set_time: # Name
     name: Prise cuisine Set time # Alias
     has_date: false
     has_time: true
-  prise_cuisine_set_hour: # Nom
+  prise_cuisine_set_hour: # Name
     name: Prise cuisine Set hour # Alias
     has_date: false
     has_time: true
 
 timer: 
-  prise_cuisine_minuteur: # Nom
+  prise_cuisine_minuteur: # Name
     duration: "00:10:00"
 
 input_number:
-  prise_cuisine_minuteur_set: # Nom
+  prise_cuisine_minuteur_set: # Name
     mode: slider
     initial: 10
     min: 10
@@ -138,10 +139,10 @@ input_number:
     step: 10
 
 input_boolean:
-  prise_cuisine_timer_actif: # Nom
+  prise_cuisine_timer_actif: # Name
     name: Prise cuisine timer actif # Alias
     icon: mdi:timer-plus
-  prise_cuisine_notification_actif: # Nom
+  prise_cuisine_notification_actif: # Name
     name: Prise cuisine notification actif # Alias
     icon: mdi:mail
 
