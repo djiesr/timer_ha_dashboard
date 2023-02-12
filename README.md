@@ -41,7 +41,10 @@ For the dashboard.yaml, just copy the content of the file in a empty card. It's 
 
 # Dashboard extra
 
-For the Dashboard extra, you need to install 2 extra feature from Hacs/Interface.
+For the Dashboard extra, you need to install 2 extra feature.
+You can install them manually or you can install HACS and had them from Hacs/Interface.
+If you want to install HACS, fallow theses instructions: https://hacs.xyz/
+
 - slider-entity-row: https://github.com/thomasloven/lovelace-slider-entity-row
 - Mushroom : https://github.com/piitaya/lovelace-mushroom
 
